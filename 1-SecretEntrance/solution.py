@@ -4,7 +4,30 @@ def move_dial(line: bytes, dial: int) -> int:
     
     return dial + int(num) if dir == "R" else dial - int(num)
 
-def solution():
+def solution_part1():
+    file = open("input.txt", "r")
+    line = file.readline().strip()
+
+    dial = 50
+    count = 0
+
+    while line:
+        dial = move_dial(line, dial)
+        while dial > 99:
+            dial -= 100
+        
+        while dial < 0:
+            dial += 100
+        
+        if dial == 0:
+            count += 1
+
+        line = file.readline().strip()
+    file.close()
+
+    print(f"Password is: {count}")
+
+def solution_part2():
     file = open("input.txt", "r")
     line = file.readline().strip()
 
@@ -23,7 +46,6 @@ def solution():
                 count += 1
             dial += 100
         
-        # print(dial)
         was_zero = False
         if dial == 0:
             count += 1
@@ -34,6 +56,5 @@ def solution():
 
     print(f"Password is: {count}")
 
-
 if __name__ == '__main__':
-    solution()
+    solution_part2()
