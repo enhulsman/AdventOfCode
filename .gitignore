@@ -1,2 +1,71 @@
+# Advent of Code input files (official and copies)
 **/*/input.txt
+**/*/input*.txt
+**/*/test*.txt
+**/*/sample*.txt
+**/*/example*.txt
+
+# Compiled C/C++ binaries
 **/*/cpp
+*.exe
+*.out
+*.o
+*.obj
+*.so
+*.dylib
+a.out
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Logs and temp files
+*.log
+*.tmp
+temp/
+tmp/
+
+# Build directories
+build/
+dist/
+target/
+
+# Rust
+target/
+Cargo.lock
+
+# Node.js (if using JavaScript solutions)
+node_modules/
+package-lock.json
