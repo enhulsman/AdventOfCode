@@ -1,4 +1,4 @@
-def move_dial(line: bytes, dial: int) -> int:
+def move_dial(line: str, dial: int) -> int:
     dir = line[0]
     num = line[1:]
     
@@ -57,4 +57,5 @@ def solution_part2():
     print(f"Password is: {count}")
 
 if __name__ == '__main__':
+    solution_part1()
     solution_part2()
