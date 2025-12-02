@@ -16,7 +16,7 @@ class Dial {
         int count;
         DialClick* pos;
         Dial(int size, int start_idx);
-        void move_dial(char dir, int num);
+        void move_dial(char dir, int num, int part);
     private:
         DialClick* create_dial(int size, int start_idx);
 };
@@ -39,12 +39,13 @@ Dial::Dial(int size, int start_idx) {
     count = 0;
 }
 
-void Dial::move_dial(char dir, int num) {
+void Dial::move_dial(char dir, int num, int part) {
     for (int i = 0; i < num; i++) {
         if (dir == 'R') pos = pos->next;
         else pos = pos->prev;
-        if (pos->val == 0) count += 1;
+        if (pos->val == 0 && part == 2) count += 1;
     }
+    if (pos->val == 0 && part == 1) count += 1;
 }
 
 DialClick* Dial::create_dial(int size, int start_idx) {
@@ -68,12 +69,10 @@ DialClick* Dial::create_dial(int size, int start_idx) {
         }
     }
     
-    start->print();
-    res->print();
     return res;
 }
 
-int main() {
+int solve(int part) {
     std::ifstream f("input.txt");
 
     if (!f.is_open()) {
@@ -88,11 +87,26 @@ int main() {
 
     while (getline(f, s)) {
         int num = stoi(s.substr(1));
-        dial->move_dial(s[0], num);
+        dial->move_dial(s[0], num, part);
     }
 
-    std::cout << dial->count << std::endl;
-
     f.close();
+    return dial->count;
+}
+
+int main(int argc, char *argv[]) {
+    using namespace std;
+    if (argc < 2) {
+        cout << "1: " << solve(1) << endl;
+        cout << "2: " << solve(2) << endl;
+    } else if (argc == 2) {
+        int part = atoi(argv[1]);
+        if (part == 1 || part == 2) {
+            cout << solve(part) << endl;
+        } else {
+            cerr << "Invalid part to solve. Enter 1 or 2 (or none for both)" << endl;
+        }
+    }
+
     return 0;
 }
