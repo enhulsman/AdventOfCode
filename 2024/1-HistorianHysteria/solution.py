@@ -1,4 +1,4 @@
-def solution_part1():
+def solution():
     file = open("input.txt", "r")
     line = file.readline().strip()
 
@@ -12,19 +12,35 @@ def solution_part1():
 
         line = file.readline().strip()
     
-    left.sort()
-    right.sort()
+    def part1():
+        left.sort()
+        right.sort()
 
-    res = 0
+        res = 0
 
-    for i in range(len(left)):
-        res += abs(left[i] - right[i])
+        for i in range(len(left)):
+            res += abs(left[i] - right[i])
 
-    print(res)
+        print(res)
 
-def solution_part2():
-    pass
+    def part2():
+        dict = {}
+        res = 0
+        for id in right:
+            if not dict.get(id):
+                dict[id] = 1
+            else:
+                dict[id] += 1
+        
+        for id in left:
+            amt = dict.get(id)
+            if amt:
+                res += id * amt
+
+        print(res)
+            
+    part1()
+    part2()
 
 if __name__ == "__main__":
-    solution_part1()
-    solution_part2()
+    solution()
