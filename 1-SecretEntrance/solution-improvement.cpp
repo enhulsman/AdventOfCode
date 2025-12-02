@@ -48,20 +48,16 @@ void Dial::move_dial(char dir, int num) {
 }
 
 DialClick* Dial::create_dial(int size, int start_idx) {
-    DialClick *res = nullptr;
-    DialClick *start = nullptr;
-    DialClick* prev = nullptr;
+    DialClick*   res = nullptr;
+    DialClick*  prev = nullptr;
+    DialClick* start = nullptr;
+
     for (int i = 0; i < size; i++) {
-        // prev->print();
-        std::cout << "Creating " << i << std::endl;
-        
         DialClick *newClick = new DialClick(i, prev);
-        // newClick->print();
         
         if (prev) prev->next = newClick;
-        // prev->print();
-        
         prev = newClick;
+
         if (i == 0) {
             start = newClick;
         } else if (i == size - 1) {
@@ -89,14 +85,10 @@ int main() {
     int count = 0;
     
     Dial* dial = new Dial(100, 50);
-    dial->move_dial('R', 50);
-
 
     while (getline(f, s)) {
         int num = stoi(s.substr(1));
         dial->move_dial(s[0], num);
-
-        // std::cout << s[0] << num << std::endl;
     }
 
     std::cout << dial->count << std::endl;
