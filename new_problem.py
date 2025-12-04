@@ -36,6 +36,76 @@ def load_template():
         print("Please ensure .template/solution.py exists in the repository root.")
         return None
 
+def load_session_cookie():
+    """
+    Load the session cookie from .env/session_cookie file.
+
+    Returns:
+        The session cookie as a string, or None if not found.
+    """
+    # Get the script's directory (repository root)
+    repo_root = Path(__file__).parent
+    cookie_file = repo_root / ".env" / "session_cookie"
+
+    try:
+        return cookie_file.read_text().strip()
+    except FileNotFoundError:
+        print(f"⚠️  Warning: Session cookie not found at {cookie_file}")
+        print("Input will not be fetched automatically.")
+        return None
+
+def fetch_puzzle_input(year, day, session_cookie):
+    """
+    Fetch the puzzle input from the Advent of Code website.
+
+    Args:
+        year: The year (e.g., 2024)
+        day: The day number (e.g., 1-25)
+        session_cookie: The session cookie for authentication
+
+    Returns:
+        The puzzle input as a string, or None if the fetch fails
+    """
+    if not session_cookie:
+        return None
+
+    url = f"https://adventofcode.com/{year}/day/{day}/input"
+
+    try:
+        print(f"🌐 Fetching puzzle input from {url}...")
+
+        # Create a request with the session cookie
+        req = Request(url, headers={
+            'User-Agent': 'Mozilla/5.0',
+            'Cookie': f'session={session_cookie}'
+        })
+
+        # Create SSL context that doesn't verify certificates
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+
+        response = urlopen(req, timeout=10, context=context)
+        puzzle_input = response.read().decode('utf-8')
+
+        print(f"✅ Successfully fetched puzzle input ({len(puzzle_input)} characters)")
+        return puzzle_input
+
+    except HTTPError as e:
+        if e.code == 404:
+            print(f"⚠️  Input not available. Day {day} may not be released yet for {year}.")
+        elif e.code == 400:
+            print(f"⚠️  Session cookie may be invalid or expired.")
+        else:
+            print(f"⚠️  HTTP Error {e.code}: {e.reason}")
+        return None
+    except URLError as e:
+        print(f"⚠️  Network error: {e.reason}")
+        return None
+    except Exception as e:
+        print(f"⚠️  Error fetching puzzle input: {e}")
+        return None
+
 def fetch_problem_name(year, day):
     """
     Fetch the problem name from the Advent of Code website.
@@ -95,7 +165,7 @@ def fetch_problem_name(year, day):
         print(f"❌ Error fetching problem name: {e}")
         return None
 
-def create_problem_directory(year, day, problem_name, template_content):
+def create_problem_directory(year, day, problem_name, template_content, puzzle_input):
     """
     Create a new Advent of Code problem directory with solution and input files.
 
@@ -104,6 +174,7 @@ def create_problem_directory(year, day, problem_name, template_content):
         day: The day number (e.g., 1-25)
         problem_name: The name of the problem (e.g., TobogganTrajectory)
         template_content: The content of the solution template
+        puzzle_input: The puzzle input content (or None for empty file)
     """
     # Get the script's directory (repository root)
     repo_root = Path(__file__).parent
@@ -125,10 +196,13 @@ def create_problem_directory(year, day, problem_name, template_content):
     solution_file.write_text(template_content)
     print(f"✅ Created solution file: {solution_file}")
 
-    # Create empty input.txt
+    # Create input.txt with puzzle input or empty
     input_file = problem_dir / "input.txt"
-    input_file.write_text("")
-    print(f"✅ Created input file: {input_file}")
+    input_file.write_text(puzzle_input if puzzle_input else "")
+    if puzzle_input:
+        print(f"✅ Created input file with puzzle input: {input_file}")
+    else:
+        print(f"✅ Created empty input file: {input_file}")
 
     print(f"\n🎄 Ready to solve! Open {problem_dir} and start coding!")
     return True
@@ -164,6 +238,9 @@ def main():
     if not template_content:
         sys.exit(1)
 
+    # Load session cookie for fetching input
+    session_cookie = load_session_cookie()
+
     # Fetch problem name if not provided
     if not problem_name:
         problem_name = fetch_problem_name(year, day)
@@ -177,8 +254,11 @@ def main():
         print("❌ Error: Problem name cannot be empty")
         sys.exit(1)
 
+    # Fetch puzzle input
+    puzzle_input = fetch_puzzle_input(year, day, session_cookie)
+
     # Create the problem directory
-    success = create_problem_directory(year, day, problem_name, template_content)
+    success = create_problem_directory(year, day, problem_name, template_content, puzzle_input)
 
     if success:
         sys.exit(0)
