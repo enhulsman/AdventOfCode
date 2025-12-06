@@ -23,16 +23,19 @@ AdventOfCode/
 Use the `new_problem.py` script to automatically create a new problem directory with the template files.
 
 **Automatic mode** (fetches problem name and input from Advent of Code):
+
 ```bash
 python3 new_problem.py <year> <day>
 ```
 
 **Manual mode** (specify problem name yourself):
+
 ```bash
 python3 new_problem.py <year> <day> <problem_name>
 ```
 
 **Examples:**
+
 ```bash
 # Automatic - fetches "Red-Nosed Reports" and puzzle input automatically
 python3 new_problem.py 2024 2
@@ -42,6 +45,7 @@ python3 new_problem.py 2024 3 TobogganTrajectory
 ```
 
 This will automatically:
+
 - Fetch the problem name from Advent of Code
 - Fetch your personalized puzzle input using your session cookie
 - Create `{year}/{day}-{ProblemName}/` directory
