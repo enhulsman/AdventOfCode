@@ -1,5 +1,5 @@
 def solution():
-    file = open("input.txt", "r")
+    file = open("/Users/ix45uu/Developer/AdventOfCode/2025/7-Laboratories/input.txt", "r")
     line = file.readline().strip()
 
     lines: list[list[str]] = []
@@ -35,26 +35,30 @@ def solution():
         # Answ1: 68696 -- too high
 
     def part2():
-        def rec(x: int, y: int, split: int):
+        from functools import lru_cache
+        @lru_cache(maxsize=10000)
+        def rec(x: int, y: int):
             if y >= len(lines):
-                return split
-            # print(x,y,lines[y][x])
+                print(f"Finished at {x=}, {y=}")
+                return 1
+            print(x,y,lines[y][x])
             if lines[y][x] == '^':
-                return rec(x-1, y, split+1) + rec(x+1, y, split+1)
-            if lines[y][x] == '|':
-                return split - 1
+                return (rec(x-1, y) + rec(x+1, y))
+            # if lines[y][x] == '|':
+            #     return 0
             if lines[y][x] == '.':
                 # lines[y][x] = '|'
-                return rec(x,y+1,split)
+                return rec(x,y+1)
             else: 
-                print(f"shouldn't exist!?! - {x=} {y=}, {lines[y][x]}, {split}")
+                print(f"shouldn't exist!?! - {x=} {y=}, {lines[y][x]}")
+                return -1
         
         start = lines[0].index('S')
         print(start, lines[1][start])
-        print(rec(start, 1, 1))
+        print(rec(start, 1))
         
     # part1()
-    part2()
+    part2()   
 
 if __name__ == '__main__':
     solution()
