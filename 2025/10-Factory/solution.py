@@ -1,7 +1,7 @@
 from z3 import *
 
 def solution():
-    file = open("input copy.txt", "r")
+    file = open("input.txt", "r")
     line = file.readline().strip()
 
     ilds: list[str] = []
@@ -74,31 +74,38 @@ def solution():
 
 
     def part2():
-        for i, btns in enumerate(buttons):
-            amt_btns = len(btns)
-            jrqs = joltage_requirements[i]
-            btns_pressed = [Int(f'btn_{i}') for i in range(amt_btns)]
-            jrq_impacted_by = [[] for _ in range(len(jrqs))]
-            for i, btn in enumerate(btns):
-                for idx in btn:
-                    jrq_impacted_by[idx].append(i)
-                
-            btns_constraints = []
-            for jrq_impact in jrq_impacted_by:
-                print(f"{jrq_impact=}")
-                # opt.add(Sum([]))
-
-            # total_jrq = 
-
-            print(jrqs, btns)
-
+        res = 0
+        for i_btns, btns in enumerate(buttons):
             opt = Optimize()
+            
+            amt_btns = len(btns)
+            jrqs = joltage_requirements[i_btns]
+            btns_pressed = [Int(f'btn_{i}') for i in range(amt_btns)]
+            for btn_pressed in btns_pressed:
+                opt.add(btn_pressed >= 0)
+
+            jrq_impacted_by = [[] for _ in range(len(jrqs))]
+            for i_btn, btn in enumerate(btns):
+                for idx in btn:
+                    jrq_impacted_by[idx].append(i_btn)
+                
+            for i_jrq, jrq_impact in enumerate(jrq_impacted_by):
+                # print(f"{jrq_impact=}")
+                opt.add(Sum([btns_pressed[x] for x in jrq_impact]) == jrqs[i_jrq])
+
+            total_presses = Sum(btns_pressed)
+            
+            opt.minimize(total_presses)
 
             if opt.check() == sat:
                 model = opt.model()
 
-        # print(res)
-        # return res
+                press_counts = [model.evaluate(btn).as_long() for btn in btns_pressed] # type: ignore
+                result = sum(press_counts)
+                res += result
+
+        print(f"{res=}")
+        return res
 
     # part1()
     part2()
