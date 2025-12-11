@@ -2,6 +2,11 @@ def solution():
     file = open("input.txt", "r")
     line = file.readline().strip()
 
+    some_list = []
+
+    while line:
+        line = file.readline().strip()
+
     def part1():
         pass
 
